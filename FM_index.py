@@ -7,8 +7,6 @@ Certaines parties du code sont inspirées d'algorithmes trouvés sur Github:
 """
 
 
-alphabet = ["A","C","G","T"]
-
 def suffix_array(seq) :
     """Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
 	--- 
@@ -122,14 +120,14 @@ def FMindex(seq) :
 	output:
 		(bwt,dic)
 		où - bw: string
-		- dic: dictionnaire
+		- liste_L: dictionnaire
 		- tables_occurences
 	"""
     liste_L, liste_rank = suffix_array(seq)
     bw = BWT(seq, liste_rank)
-    table_C = count_occ(seq)
+    table_C = count_occ(liste_L)
     table_occurences = count_table(bw)
     return bw, table_C, table_occurences
 
-
+FMindex(liste[0])
 	
