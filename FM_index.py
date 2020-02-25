@@ -133,49 +133,50 @@ def FMindex(seq) :
 		- liste_L: dictionnaire
 		- tables_occurences
 	"""
-	liste_L, liste_rank = suffix_array(seq)
-	bw = BWT(seq, liste_rank)
-	table_C = calcul_C(liste_L)
-	table_occurences = count_table(bw)
-	return bw, table_C, table_occurences
+
+    liste_L, liste_rank = suffix_array(seq)
+    bw = BWT(seq, liste_rank)
+    table_C = calcul_C(liste_L)
+    table_occurences = count_table(bw)
+    return bw, table_C, table_occurences
 
 
 def Backward_count(seq, query) :
-	
-	# Initialisation de FM-index de la séquence de référence
-	bw, table_C, table_occurrences = FMindex(seq)
-	keys_C = list(table_C.keys())
-	nxt_key = {keys_C[i] : keys_C[i + 1] for i in range(1, len(keys_C) - 1)}
-	
-	# Initialisation de l'algo
-	query = query[::-1]
-	sub_query = query[0]
-	if sub_query not in keys_C :
-		dict_bw = {}
-	else :
-		sp = table_C[sub_query]
-		ep = table_C[nxt_key[sub_query]] - 1
-		dict_bw = {sub_query : (sp, ep)}
-		
-		# Parcours du query
-		index = 1
-		while index <= len(query) - 1 and sp <= ep :
-			
-			sub_query = query[index]
-			sp = table_C[sub_query] + table_occurrences[sub_query][sp]
-			ep = table_C[sub_query] + table_occurrences[sub_query][ep + 1] - 1
-			dict_bw[query[:index]] = (sp, ep)
-			index += 1
-			
-	return dict_bw
+    
+    # Initialisation de FM-index de la séquence de référence
+    bw, table_C, table_occurrences = FMindex(seq)
+    keys_C = list(table_C.keys())
+    nxt_key = {keys_C[i] : keys_C[i + 1] for i in range(1, len(keys_C) - 1)}
+    
+    # Initialisation de l'algo
+    query = query[::-1]
+    sub_query = query[0]
+    if sub_query not in keys_C :
+        dict_bw = {}
+    else :
+        sp = table_C[sub_query]
+        ep = table_C[nxt_key[sub_query]] - 1
+        dict_bw = {sub_query : (sp, ep)}
+        
+        # Parcours du query
+        index = 1
+        while index <= len(query) - 1 and sp <= ep :
+            
+            sub_query = query[index]
+            sp = table_C[sub_query] + table_occurrences[sub_query][sp]
+            ep = table_C[sub_query] + table_occurrences[sub_query][ep + 1] - 1
+            dict_bw[query[:index]] = (sp, ep)
+            index += 1
+            
+    return dict_bw
 
 
 def calculateD(query, seq) :
-	z = 0
-	j = 0
-	for i in range(len(query)) :
-		pass
-	
+    z = 0
+    j = 0
+    for i in range(len(query)) :
+        pass
+    
 import generation_sequences as gs
 liste_adn = gs.gen_seq()
 seq = liste_adn[0]
