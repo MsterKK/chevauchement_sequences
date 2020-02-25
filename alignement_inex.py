@@ -5,7 +5,7 @@ Created on Tue Feb 25 11:50:57 2020
 @author: kevin
 """
 
-from FM_index import *
+from FM_index import fm
 
 def calcul_D(seq, l, count_ref, Rev_occ_ref):
 	"""Calcule l'array D(.) -- 
@@ -76,14 +76,14 @@ ref = "ATGAGA"
 l = len(ref) + 1
 
 
-ref_BWT, count_ref, occ_ref = FMindex(ref)
+ref_BWT, count_ref, occ_ref = fm.FMindex(ref)
 
 print('count_ref',count_ref)
 
 Rev_ref = ref[::-1]
 print('Rev_ref',Rev_ref)
-Rev_ref_BWT = BWT(Rev_ref)
-Rev_occ_ref = count_table(Rev_ref_BWT)
+Rev_ref_BWT = fm.BWT(Rev_ref)
+Rev_occ_ref = fm.count_table(Rev_ref_BWT)
 print('Rev_occ_ref',Rev_occ_ref)
 
 D = calcul_D(seq, l, count_ref, Rev_occ_ref)
