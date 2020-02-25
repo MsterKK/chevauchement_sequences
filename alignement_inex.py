@@ -21,19 +21,14 @@ def calcul_D(seq, l, count_ref, Rev_occ_ref):
 	k = 1
 	z = 0
 	D = [0] * len(seq)
+
 	for i in range(len(seq)):
-		print('----------')
-		print('k',k,'l',l)
-		print('count_ref',count_ref[seq[i]] )
-		print('Rev_occ_ref',Rev_occ_ref[seq[i]][k-1])
-		k = count_ref[seq[i]] + Rev_occ_ref[seq[i]][k-1]
+		k = count_ref[seq[i]] + Rev_occ_ref[seq[i]][k-1]+1
 		l = count_ref[seq[i]] + Rev_occ_ref[seq[i]][l]
-		print('(k,l)',(k,l))
 		if k > l :
 			k = 1
 			l = len(ref)
 			z = z + 1
-			print(z)
 		D[i]=z
 	return D
 
@@ -76,9 +71,9 @@ def Inex_rec(seq, i, z, k, l, D, count_ref, occ_ref):
 
 
 #test 
-seq = "ATG"
+seq = "ATGAGA"
 ref = "ATGAGA"
-l = len(ref)
+l = len(ref) + 1
 
 
 ref_BWT, count_ref, occ_ref = FMindex(ref)
