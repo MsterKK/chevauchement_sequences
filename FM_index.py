@@ -19,10 +19,10 @@ def suffix_array(seq):
 	seq = seq +'$'
 	#tri de la liste composée des suffixes ainsi que du rang du suffixe
 	liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
+	#print('liste_suffixes',liste_suffixes)
 	#Construction de la liste contenant les rangs de la liste des suffixes
 	S = [liste_suffixes[i][1] for i in range(len(seq))]
 	return S
-
 
 def BWT(seq):
 	'''Fonction qui réalise la transformation de Burrows-Wheeler à partir de la table des suffixes
@@ -35,57 +35,34 @@ def BWT(seq):
 	seq2 = seq +'$'
 	#récuperation des rangs de la table des suffixes pour construire la BWT
 	for c in suffix_array(seq):
-		bw += seq2[c]
+		bw += seq2[c-1]
 	return bw
 
-
-#def count_occ(seq):
-#	"""Fonction qui, pour un caractère c, compte les occurences de tous les caractères lexicographiquement plus 
-#	petits que c
-#	--- 
-#	output
-#		dic: dictionnaire
-#	"""
-#    
-#	dic = {}
-#	seq = seq + "$"
-#	alphabet = ["$","A","C","G","T"]
-#
-#	#initialisation du dictionnaire
-#	for letter in alphabet:
-#		dic[letter]=0
-#	#comptage du nombre de lettre de chaque type
-#	for letter in seq:
-#		dic[letter] += 1
-#	#inverse la liste dans l'ordre lexicographique
-#	alphabetRev = alphabet[::-1]
-#	nb_carac = len(seq)
-#	#ajout du nb de caractères précédant chaque lettre en partant de la derniere lettre dans l'ordre lexicographique
-#	for letter in alphabetRev:
-#			dic[letter] = nb_carac - dic[letter]
-#			nb_carac = dic[letter]
-#	return dic
-
-
-def count_occ(bwt) :
-    """Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
-    compte les occurences de tous les caractères lexicographiquement plus 
+def count_occ(seq):
+	"""Fonction qui, pour un caractère c, compte les occurences de tous les caractères lexicographiquement plus 
 	petits que c
 	--- 
 	output
 		dic: dictionnaire
 	"""
-    # Initialisation du dictionnaire et du compteur d'occurence
-    dict_occ = {}
-    compteur = 0
-    
-    # Parcours de la chaine de caractère
-    for letter in bwt :
-        if letter not in dict_occ :
-            dict_occ[letter] = compteur
-        compteur += 1
-        
-    return dict_occ
+	
+	dic = {}
+	seq = seq + "$"
+	alphabet = ["$","A","C","G","T"]
+	#initialisation du dictionnaire
+	for letter in alphabet:
+		dic[letter]=0
+	#comptage du nombre de lettre de chaque type
+	for letter in seq:
+		dic[letter] += 1
+	#inverse la liste dans l'ordre lexicographique
+	alphabetRev = alphabet[::-1]
+	nb_carac = len(seq)
+	#ajout du nb de caractères précédant chaque lettre en partant de la derniere lettre dans l'ordre lexicographique
+	for letter in alphabetRev:
+			dic[letter] = nb_carac - dic[letter]
+			nb_carac = dic[letter]
+	return dic
 
 def count_table(seq):
 	"""Fonction qui renvoie la table des occurences d'une sequence, çad un dictionnaire qui, pour chaque lettre de l'alphabet,
@@ -122,8 +99,8 @@ def FMindex(seq):
 		- tables_occurences
 	"""
 	bw = BWT(seq)
-	dic = count_occ(bw)
-	table_occurences = count_table(seq)
+	dic = count_occ(seq)
+	table_occurences = count_table(bw)
 	return bw, dic, table_occurences
 	
 	
