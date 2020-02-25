@@ -168,13 +168,6 @@ def Backward_count(seq, query) :
             index += 1
             
     return dict_bw
-
-
-def calculateD(query, seq) :
-    z = 0
-    j = 0
-    for i in range(len(query)) :
-        pass
     
 #import generation_sequences as gs
 #liste_adn = gs.gen_seq()

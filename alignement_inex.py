@@ -5,7 +5,7 @@ Created on Tue Feb 25 11:50:57 2020
 @author: kevin
 """
 
-import FM_index2 as fm
+import FM_index as fm
 
 def calcul_D(seq, l, count_ref, Rev_occ_ref):
 	"""Calcule l'array D(.) -- 
@@ -32,6 +32,19 @@ def calcul_D(seq, l, count_ref, Rev_occ_ref):
 		D[i]=z
 	return D
 
+def calcul_D2(query, seq) :
+    z = 0
+    j = 0
+    D = [0]*len(query)
+    for i in range(len(query)) :
+        if query[j:i] not in seq :
+            z += 1
+            j = i + 1
+        D[i] = z
+    return D
+
+calcul_D(seq, l, count_ref, Rev_occ_ref)
+calcul_D2(seq, ref)
 
 def alignement_inexact():
 	pass
@@ -72,9 +85,8 @@ def Inex_rec(seq, i, z, k, l, D, count_ref, occ_ref):
 
 #test 
 seq = "ATGAGA"
-ref = "ATGAGA"
-l = len(ref) + 1
-
+ref = "ATGCGA"
+l = len(ref)
 
 ref_BWT, count_ref, occ_ref = fm.FMindex(ref)
 
@@ -82,7 +94,7 @@ print('count_ref',count_ref)
 
 Rev_ref = ref[::-1]
 print('Rev_ref',Rev_ref)
-Rev_ref_BWT = fm.BWT(Rev_ref)
+Rev_ref_BWT = fm.BWT(Rev_ref, fm.suffix_array(Rev_ref)[1])
 Rev_occ_ref = fm.count_table(Rev_ref_BWT)
 print('Rev_occ_ref',Rev_occ_ref)
 
