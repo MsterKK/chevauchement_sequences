@@ -15,16 +15,12 @@ def suffix_array(seq):
 	output: 
 		la liste contenant les rangs des suffixes triés
 	"""
-    
-	# Ajout de la caractère $ à la fin de la chaîne de caractères
+	#on ajoute le caractère $ à la fin de la chaîne de caractères
 	seq = seq +'$'
-    
-	# Tri de la liste composée des suffixes ainsi que du rang du suffixe
+	#tri de la liste composée des suffixes ainsi que du rang du suffixe
 	liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
-    
-	# Construction de la liste contenant les rangs de la liste des suffixes
-	S = [suffixe[1] for suffixe in liste_suffixes]
-    
+	#Construction de la liste contenant les rangs de la liste des suffixes
+	S = [liste_suffixes[i][1] for i in range(len(seq))]
 	return S
 
 def BWT(seq):
@@ -42,7 +38,6 @@ def BWT(seq):
 	return bw
 
 def count_occ(seq):
-	global alphabet
 	"""Fonction qui, pour un caractère c, compte les occurences de tous les caractères lexicographiquement plus 
 	petits que c
 	--- 
@@ -52,7 +47,7 @@ def count_occ(seq):
 	
 	dic = {}
 	seq = seq + "$"
-	alphabet =['$'] + alphabet
+	alphabet = ["$","A","C","G","T"]
 	#initialisation du dictionnaire
 	for letter in alphabet:
 		dic[letter]=0
@@ -75,9 +70,8 @@ def count_table(seq):
 	output
 		dic_table: dictionnaire contenant des listes pour chaque clef
 	"""
-	global alphabet
 	dic_table = {}
-	alphabet =['$'] + alphabet
+	alphabet =["$","A","C","G","T"]
 	taille_seq = len(seq)
 	#initialisation du dictionnaire
 	for letter in alphabet:
@@ -93,7 +87,7 @@ def count_table(seq):
 	return dic_table
 
 
-def FM_index(seq):
+def FMindex(seq):
 	"""Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
 	contenant les occurences des caractère lexicographiquement plus petit que c, et la table des occurences (voir rapport
 	pour détail)
