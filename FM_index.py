@@ -2,7 +2,8 @@
 """
 Created on Mon Feb 24 15:34:16 2020
 
-@author: kevin
+Certaines parties du code sont inspirées d'algorithmes trouvés sur Github:
+- notamment https://gist.github.com/Puriney/6324227
 """
 
 
