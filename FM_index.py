@@ -9,22 +9,28 @@ Certaines parties du code sont inspirées d'algorithmes trouvés sur Github:
 
 alphabet = ["A","C","G","T"]
 
-def suffix_array(seq):
-	"""Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
+def suffix_array(seq) :
+    """Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
 	--- 
 	output: 
 		la liste contenant les rangs des suffixes triés
 	"""
-	#on ajoute le caractère $ à la fin de la chaîne de caractères
-	seq = seq +'$'
-	#tri de la liste composée des suffixes ainsi que du rang du suffixe
-	liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
-	#print('liste_suffixes',liste_suffixes)
-	#Construction de la liste contenant les rangs de la liste des suffixes
-	S = [suffixe[1] for suffixe in liste_suffixes]
-	return S
+    
+	# on ajoute le caractère $ à la fin de la chaîne de caractères
+    seq = seq + '$'
+    
+    # tri de la liste composée des suffixes ainsi que du rang du suffixe
+    liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
+    
+    #Construction de la liste contenant les rangs de la liste des suffixes
+    S = [] ; L = ''
+    for suffixe in liste_suffixes :
+        S.append(suffixe[1])
+        L += suffixe[0][0]
+    
+    return L, S
 
-def BWT(seq):
+def BWT(seq, liste_rank):
 	'''Fonction qui réalise la transformation de Burrows-Wheeler à partir de la table des suffixes
 	---
 	output:
@@ -34,7 +40,7 @@ def BWT(seq):
 	#ajout du caractère $ à la chaîne de caractère originale
 	seq2 = seq +'$'
 	#récuperation des rangs de la table des suffixes pour construire la BWT
-	for c in suffix_array(seq):
+	for c in liste_rank:
 		bw += seq2[c-1]
 	return bw
 
@@ -64,7 +70,7 @@ def BWT(seq):
 #			nb_carac = dic[letter]
 #	return dic
 
-def count_occ(bwt) :
+def count_occ(seq_sorted) :
     """Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
     compte les occurences de tous les caractères lexicographiquement plus 
 	petits que c
@@ -73,16 +79,16 @@ def count_occ(bwt) :
 		dic: dictionnaire
 	"""
     # Initialisation du dictionnaire et du compteur d'occurence
-    dict_occ = {}
+    table_C = {}
     compteur = 0
     
     # Parcours de la chaine de caractère
-    for letter in bwt :
-        if letter not in dict_occ :
-            dict_occ[letter] = compteur
+    for letter in seq_sorted :
+        if letter not in table_C :
+            table_C[letter] = compteur
         compteur += 1
     
-    return dict_occ
+    return table_C
 
 def count_table(seq):
 	"""Fonction qui renvoie la table des occurences d'une sequence, çad un dictionnaire qui, pour chaque lettre de l'alphabet,
@@ -108,8 +114,9 @@ def count_table(seq):
 	return dic_table
 
 
-def FMindex(seq):
-	"""Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
+
+def FMindex(seq) :
+    """Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
 	contenant les occurences des caractère lexicographiquement plus petit que c, et la table des occurences (voir rapport
 	pour détail)
 	output:
@@ -118,12 +125,11 @@ def FMindex(seq):
 		- dic: dictionnaire
 		- tables_occurences
 	"""
-	bw = BWT(seq)
-	dic = count_occ(seq)
-	table_occurences = count_table(bw)
-	return bw, dic, table_occurences
-	
-	
-	
-	
+    liste_L, liste_rank = suffix_array(seq)
+    bw = BWT(seq, liste_rank)
+    table_C = count_occ(seq)
+    table_occurences = count_table(bw)
+    return bw, table_C, table_occurences
+
+
 	
