@@ -21,7 +21,7 @@ def suffix_array(seq):
 	liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
 	#print('liste_suffixes',liste_suffixes)
 	#Construction de la liste contenant les rangs de la liste des suffixes
-	S = [liste_suffixes[i][1] for i in range(len(seq))]
+	S = [suffixe[1] for suffixe in liste_suffixes]
 	return S
 
 def BWT(seq):
