@@ -91,7 +91,6 @@ def calcul_C(seq_sorted) :
 	
 	#Rajout des caractères non présents dans seq_sorted (s'il en existe)
 	for k in range(len(alphabet)):
-		print(alphabet[k])
 		if alphabet[k] not in table_C:
 			table_C[alphabet[k]] = table_C[alphabet[k-1]]																	 
 	# Ajout du dernier élément
