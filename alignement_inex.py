@@ -5,7 +5,7 @@ Created on Tue Feb 25 11:50:57 2020
 @author: kevin
 """
 
-from FM_index import fm
+import FM_index2 as fm
 
 def calcul_D(seq, l, count_ref, Rev_occ_ref):
 	"""Calcule l'array D(.) -- 
