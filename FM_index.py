@@ -38,31 +38,51 @@ def BWT(seq):
 		bw += seq2[c-1]
 	return bw
 
-def count_occ(seq):
-	"""Fonction qui, pour un caractère c, compte les occurences de tous les caractères lexicographiquement plus 
+#def count_occ(seq):
+#	"""Fonction qui, pour un caractère c, compte les occurences de tous les caractères lexicographiquement plus 
+#	petits que c
+#	--- 
+#	output
+#		dic: dictionnaire
+#	"""
+#	
+#	dic = {}
+#	seq = seq + "$"
+#	alphabet = ["$","A","C","G","T"]
+#	#initialisation du dictionnaire
+#	for letter in alphabet:
+#		dic[letter]=0
+#	#comptage du nombre de lettre de chaque type
+#	for letter in seq:
+#		dic[letter] += 1
+#	#inverse la liste dans l'ordre lexicographique
+#	alphabetRev = alphabet[::-1]
+#	nb_carac = len(seq)
+#	#ajout du nb de caractères précédant chaque lettre en partant de la derniere lettre dans l'ordre lexicographique
+#	for letter in alphabetRev:
+#			dic[letter] = nb_carac - dic[letter]
+#			nb_carac = dic[letter]
+#	return dic
+
+def count_occ(bwt) :
+    """Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
+    compte les occurences de tous les caractères lexicographiquement plus 
 	petits que c
 	--- 
 	output
 		dic: dictionnaire
 	"""
-	
-	dic = {}
-	seq = seq + "$"
-	alphabet = ["$","A","C","G","T"]
-	#initialisation du dictionnaire
-	for letter in alphabet:
-		dic[letter]=0
-	#comptage du nombre de lettre de chaque type
-	for letter in seq:
-		dic[letter] += 1
-	#inverse la liste dans l'ordre lexicographique
-	alphabetRev = alphabet[::-1]
-	nb_carac = len(seq)
-	#ajout du nb de caractères précédant chaque lettre en partant de la derniere lettre dans l'ordre lexicographique
-	for letter in alphabetRev:
-			dic[letter] = nb_carac - dic[letter]
-			nb_carac = dic[letter]
-	return dic
+    # Initialisation du dictionnaire et du compteur d'occurence
+    dict_occ = {}
+    compteur = 0
+    
+    # Parcours de la chaine de caractère
+    for letter in bwt :
+        if letter not in dict_occ :
+            dict_occ[letter] = compteur
+        compteur += 1
+    
+    return dict_occ
 
 def count_table(seq):
 	"""Fonction qui renvoie la table des occurences d'une sequence, çad un dictionnaire qui, pour chaque lettre de l'alphabet,
