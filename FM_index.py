@@ -14,12 +14,16 @@ def suffix_array(seq):
 	output: 
 		la liste contenant les rangs des suffixes triés
 	"""
-	#on ajoute le caractère $ à la fin de la chaîne de caractères
+    
+	# Ajout de la caractère $ à la fin de la chaîne de caractères
 	seq = seq +'$'
-	#tri de la liste composée des suffixes ainsi que du rang du suffixe
+    
+	# Tri de la liste composée des suffixes ainsi que du rang du suffixe
 	liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
-	#Construction de la liste contenant les rangs de la liste des suffixes
-	S = [liste_suffixes[i][1] for i in range(len(seq))]
+    
+	# Construction de la liste contenant les rangs de la liste des suffixes
+	S = [suffixe[1] for suffixe in liste_suffixes]
+    
 	return S
 
 def BWT(seq):
