@@ -6,6 +6,8 @@ Created on Mon Feb 24 15:34:16 2020
 """
 
 
+alphabet = ["A","C","G","T"]
+
 def suffix_array(seq):
 	"""Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
 	--- 
@@ -35,7 +37,9 @@ def BWT(seq):
 	return bw
 
 def count_occ(seq):
-	"""Fonction qui compte les occurences de chaque caractères de seq
+	global alphabet
+	"""Fonction qui, pour un caractère c, compte les occurences de tous les caractères lexicographiquement plus 
+	petits que c
 	--- 
 	output
 		dic: dictionnaire
@@ -43,8 +47,7 @@ def count_occ(seq):
 	
 	dic = {}
 	seq = seq + "$"
-	#alphabet trié utilisé pour former la chaîne seq
-	alphabet = sorted(set(seq))
+	alphabet =['$'] + alphabet
 	#initialisation du dictionnaire
 	for letter in alphabet:
 		dic[letter]=0
@@ -60,18 +63,45 @@ def count_occ(seq):
 			nb_carac = dic[letter]
 	return dic
 
+def count_table(seq):
+	"""Fonction qui renvoie la table des occurences d'une sequence, çad un dictionnaire qui, pour chaque lettre de l'alphabet,
+	contient la ligne du tableau des occurences (voir rapport pour le détail)
+	-
+	output
+		dic_table: dictionnaire contenant des listes pour chaque clef
+	"""
+	global alphabet
+	dic_table = {}
+	alphabet =['$'] + alphabet
+	taille_seq = len(seq)
+	#initialisation du dictionnaire
+	for letter in alphabet:
+		dic_table[letter] = [0]*taille_seq
+	#parcours de la chaine de caractères pour trouver les occurences de chaque caractère
+	for k in range(taille_seq):
+		c = seq[k]
+		dic_table[c][k] = 1
+	#concatenation des occurences trouvées afin de former le tableau
+	for letter in alphabet:
+		for k in range(1,taille_seq):
+			dic_table[letter][k] += dic_table[letter][k-1]
+	return dic_table
+
 
 def FM_index(seq):
-	"""Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C (ici un dictionnaire)
-	contenant les occurences de chaque caractère 
+	"""Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
+	contenant les occurences des caractère lexicographiquement plus petit que c, et la table des occurences (voir rapport
+	pour détail)
 	output:
 		(bwt,dic)
 		où - bw: string
 		- dic: dictionnaire
+		- tables_occurences
 	"""
 	bw = BWT(seq)
 	dic = count_occ(seq)
-	return (bw,dic)
+	table_occurences = count_table(seq)
+	return bw, dic, table_occurences
 	
 	
 	
