@@ -153,7 +153,7 @@ def Backward_count(seq, query) :
         
         # Parcours du query
         index = 1
-        while index <= len(query) and sp <= ep :
+        while index <= len(query) - 1 and sp <= ep :
             
             sub_query = query[index]
             sp = table_C[sub_query] + table_occurrences[sub_query][sp - 1]
@@ -163,5 +163,7 @@ def Backward_count(seq, query) :
             
     return dict_bw
         
-
-Backward_count(seq, 'ACTTTAC')
+import generation_sequences as gs
+liste_adn = gs.gen_seq()
+seq = liste_adn[0]
+Backward_count('ACTTTAC', 'TT')
