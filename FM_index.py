@@ -69,7 +69,7 @@ def BWT(seq, liste_rank):
 #	return dic
 
 
-def count_occ(seq_sorted) :
+def calcul_C(seq_sorted) :
     """Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
     compte les occurences de tous les caractères lexicographiquement plus 
 	petits que c
@@ -129,7 +129,7 @@ def FMindex(seq) :
 	"""
     liste_L, liste_rank = suffix_array(seq)
     bw = BWT(seq, liste_rank)
-    table_C = count_occ(liste_L)
+    table_C = calcul_C(liste_L)
     table_occurences = count_table(bw)
     return bw, table_C, table_occurences
 
@@ -162,8 +162,16 @@ def Backward_count(seq, query) :
             index += 1
             
     return dict_bw
+
+
+def calculateD(query, seq) :
+    z = 0
+    j = 0
+    for i in range(len(query)) :
         
+    
 import generation_sequences as gs
 liste_adn = gs.gen_seq()
 seq = liste_adn[0]
-Backward_count('ACTTTAC', 'TT')
+Backward_count(seq, 'ACTTTAC')
+bw, table_C, table_occurences = FMindex(seq)
