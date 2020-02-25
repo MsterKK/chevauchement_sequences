@@ -36,7 +36,7 @@ def BWT(seq, liste_rank):
 	'''
 	bw = ''
 	#ajout du caractère $ à la chaîne de caractère originale
-	seq2 = seq +'$'
+	seq2 = seq + '$'
 	#récuperation des rangs de la table des suffixes pour construire la BWT
 	for c in liste_rank:
 		bw += seq2[c-1]
@@ -105,14 +105,14 @@ def count_table(seq):
 	taille_seq = len(seq)
 	#initialisation du dictionnaire
 	for letter in alphabet:
-		dic_table[letter] = [0]*taille_seq
+		dic_table[letter] = [0]*(taille_seq+1)
 	#parcours de la chaine de caractères pour trouver les occurences de chaque caractère
-	for k in range(taille_seq):
-		c = seq[k]
+	for k in range(1,taille_seq+1):
+		c = seq[k-1]
 		dic_table[c][k] = 1
 	#concatenation des occurences trouvées afin de former le tableau
 	for letter in alphabet:
-		for k in range(1,taille_seq):
+		for k in range(1,taille_seq+1):
 			dic_table[letter][k] += dic_table[letter][k-1]
 	return dic_table
 
@@ -156,8 +156,8 @@ def Backward_count(seq, query) :
         while index <= len(query) and sp <= ep :
             
             sub_query = query[index]
-            sp = table_C[sub_query] + table_occurrences[sub_query][sp - 1]
-            ep = table_C[sub_query] + table_occurrences[sub_query][ep] - 1
+            sp = table_C[sub_query] + table_occurrences[sub_query][sp]
+            ep = table_C[sub_query] + table_occurrences[sub_query][ep + 1] - 1
             dict_bw[query[:index]] = (sp, ep)
             index += 1
             
