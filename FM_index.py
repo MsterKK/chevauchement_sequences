@@ -8,25 +8,25 @@ Certaines parties du code sont inspirées d'algorithmes trouvés sur Github:
 
 
 def suffix_array(seq) :
-    """Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
+	"""Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
 	--- 
 	output: 
 		la liste contenant les rangs des suffixes triés
 	"""
-    
+	
 	# on ajoute le caractère $ à la fin de la chaîne de caractères
-    seq = seq + '$'
-    
-    # tri de la liste composée des suffixes ainsi que du rang du suffixe
-    liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
-    
-    #Construction de la liste contenant les rangs de la liste des suffixes
-    S = [] ; L = ''
-    for suffixe in liste_suffixes :
-        S.append(suffixe[1])
-        L += suffixe[0][0]
-    
-    return L, S
+	seq = seq + '$'
+	
+	# tri de la liste composée des suffixes ainsi que du rang du suffixe
+	liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
+	
+	#Construction de la liste contenant les rangs de la liste des suffixes
+	S = [] ; seq_sorted = ''
+	for suffixe in liste_suffixes :
+		S.append(suffixe[1])
+		seq_sorted += suffixe[0][0]
+	
+	return seq_sorted, S
 
 def BWT(seq, liste_rank):
 	'''Fonction qui réalise la transformation de Burrows-Wheeler à partir de la table des suffixes
@@ -69,28 +69,35 @@ def BWT(seq, liste_rank):
 #	return dic
 
 
-def count_occ(seq_sorted) :
-    """Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
-    compte les occurences de tous les caractères lexicographiquement plus 
+def calcul_C(seq_sorted) :
+	"""Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
+	compte les occurences de tous les caractères lexicographiquement plus 
 	petits que c
 	--- 
 	output
 		dic: dictionnaire
 	"""
-    # Initialisation du dictionnaire et du compteur d'occurence
-    table_C = {}
-    compteur = 0
+	alphabet =["$","A","C","G","T"]                                
     
-    # Parcours de la chaine de caractère
-    for letter in seq_sorted :
-        if letter not in table_C :
-            table_C[letter] = compteur
-        compteur += 1
-    
-    # Ajout du dernier élément
-    table_C['#'] = compteur
-    
-    return table_C
+	# Initialisation du dictionnaire et du compteur d'occurence
+	table_C = {}
+	compteur = 0
+	
+	# Parcours de la chaine de caractère
+	for letter in seq_sorted :
+		if letter not in table_C :
+			table_C[letter] = compteur
+		compteur += 1
+	
+	#Rajout des caractères non présents dans seq_sorted (s'il en existe)
+	for k in range(len(alphabet)):
+		print(alphabet[k])
+		if alphabet[k] not in table_C:
+			table_C[alphabet[k]] = table_C[alphabet[k-1]]																	 
+	# Ajout du dernier élément
+	table_C['#'] = compteur
+	
+	return table_C
 
 
 def count_table(seq):
@@ -118,7 +125,7 @@ def count_table(seq):
 
 
 def FMindex(seq) :
-    """Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
+	"""Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
 	contenant les occurences des caractère lexicographiquement plus petit que c, et la table des occurences (voir rapport
 	pour détail)
 	output:
@@ -127,41 +134,51 @@ def FMindex(seq) :
 		- liste_L: dictionnaire
 		- tables_occurences
 	"""
-    liste_L, liste_rank = suffix_array(seq)
-    bw = BWT(seq, liste_rank)
-    table_C = count_occ(liste_L)
-    table_occurences = count_table(bw)
-    return bw, table_C, table_occurences
+	liste_L, liste_rank = suffix_array(seq)
+	bw = BWT(seq, liste_rank)
+	table_C = calcul_C(liste_L)
+	table_occurences = count_table(bw)
+	return bw, table_C, table_occurences
 
 
 def Backward_count(seq, query) :
-    
-    # Initialisation de FM-index de la séquence de référence
-    bw, table_C, table_occurrences = FMindex(seq)
-    keys_C = list(table_C.keys())
-    nxt_key = {keys_C[i] : keys_C[i + 1] for i in range(1, len(keys_C) - 1)}
-    
-    # Initialisation de l'algo
-    query = query[::-1]
-    sub_query = query[0]
-    if sub_query not in keys_C :
-        dict_bw = {}
-    else :
-        sp = table_C[sub_query]
-        ep = table_C[nxt_key[sub_query]] - 1
-        dict_bw = {sub_query : (sp, ep)}
-        
-        # Parcours du query
-        index = 1
-        while index <= len(query) and sp <= ep :
-            
-            sub_query = query[index]
-            sp = table_C[sub_query] + table_occurrences[sub_query][sp]
-            ep = table_C[sub_query] + table_occurrences[sub_query][ep + 1] - 1
-            dict_bw[query[:index]] = (sp, ep)
-            index += 1
-            
-    return dict_bw
-        
+	
+	# Initialisation de FM-index de la séquence de référence
+	bw, table_C, table_occurrences = FMindex(seq)
+	keys_C = list(table_C.keys())
+	nxt_key = {keys_C[i] : keys_C[i + 1] for i in range(1, len(keys_C) - 1)}
+	
+	# Initialisation de l'algo
+	query = query[::-1]
+	sub_query = query[0]
+	if sub_query not in keys_C :
+		dict_bw = {}
+	else :
+		sp = table_C[sub_query]
+		ep = table_C[nxt_key[sub_query]] - 1
+		dict_bw = {sub_query : (sp, ep)}
+		
+		# Parcours du query
+		index = 1
+		while index <= len(query) - 1 and sp <= ep :
+			
+			sub_query = query[index]
+			sp = table_C[sub_query] + table_occurrences[sub_query][sp]
+			ep = table_C[sub_query] + table_occurrences[sub_query][ep + 1] - 1
+			dict_bw[query[:index]] = (sp, ep)
+			index += 1
+			
+	return dict_bw
 
+
+def calculateD(query, seq) :
+	z = 0
+	j = 0
+	for i in range(len(query)) :
+		pass
+	
+import generation_sequences as gs
+liste_adn = gs.gen_seq()
+seq = liste_adn[0]
 Backward_count(seq, 'ACTTTAC')
+bw, table_C, table_occurences = FMindex(seq)
