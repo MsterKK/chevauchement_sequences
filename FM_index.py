@@ -68,6 +68,7 @@ def BWT(seq, liste_rank):
 #			nb_carac = dic[letter]
 #	return dic
 
+
 def count_occ(seq_sorted) :
     """Fonction qui, pour une chaine de caractère seq, après avoir été transformée par BWT / Suffix Array
     compte les occurences de tous les caractères lexicographiquement plus 
@@ -86,7 +87,11 @@ def count_occ(seq_sorted) :
             table_C[letter] = compteur
         compteur += 1
     
+    # Ajout du dernier élément
+    table_C['#'] = compteur
+    
     return table_C
+
 
 def count_table(seq):
 	"""Fonction qui renvoie la table des occurences d'une sequence, çad un dictionnaire qui, pour chaque lettre de l'alphabet,
@@ -112,7 +117,6 @@ def count_table(seq):
 	return dic_table
 
 
-
 def FMindex(seq) :
     """Fonction qui renvoie la transformation de Burrows-Wheeler ainsi que la table C[c] (ici un dictionnaire)
 	contenant les occurences des caractère lexicographiquement plus petit que c, et la table des occurences (voir rapport
@@ -129,5 +133,35 @@ def FMindex(seq) :
     table_occurences = count_table(bw)
     return bw, table_C, table_occurences
 
-FMindex(liste[0])
-	
+
+def Backward_count(seq, query) :
+    
+    # Initialisation de FM-index de la séquence de référence
+    bw, table_C, table_occurrences = FMindex(seq)
+    keys_C = list(table_C.keys())
+    nxt_key = {keys_C[i] : keys_C[i + 1] for i in range(1, len(keys_C) - 1)}
+    
+    # Initialisation de l'algo
+    query = query[::-1]
+    sub_query = query[0]
+    if sub_query not in keys_C :
+        dict_bw = {}
+    else :
+        sp = table_C[sub_query]
+        ep = table_C[nxt_key[sub_query]] - 1
+        dict_bw = {sub_query : (sp, ep)}
+        
+        # Parcours du query
+        index = 1
+        while index <= len(query) and sp <= ep :
+            
+            sub_query = query[index]
+            sp = table_C[sub_query] + table_occurrences[sub_query][sp - 1]
+            ep = table_C[sub_query] + table_occurrences[sub_query][ep] - 1
+            dict_bw[query[:index]] = (sp, ep)
+            index += 1
+            
+    return dict_bw
+        
+
+Backward_count(seq, 'ACTTTAC')
