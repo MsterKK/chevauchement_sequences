@@ -7,14 +7,14 @@ Created on Tue Feb 25 11:50:57 2020
 
 import FM_index as fm
 
-def calcul_D(seq, l, count_ref, Rev_occ_ref):
+def calcul_D(seq, l, C_ref, Rev_occ_ref):
 	"""Calcule l'array D(.) -- 
 	D[i] contient le nombre minimal de mismatch entre la sequence de reference et seq[0,i]
 	---
 	input: 
 		seq: string -- chaine de caractères que l'on veut comparer à une séquence de référence
 		l: int -- longueur de la séquence de référence
-		count_ref: table C des caractères lexicographiquement plus petit (générée avec count_occ) de la sequence de reference
+		C_ref: table C des caractères lexicographiquement plus petit (générée avec count_occ) de la sequence de reference
 		Rev_occ_ref: table des occurences (générée avec count_table) 
 			de la BWT de l'inverse de la sequence de reference
 	"""
@@ -23,8 +23,8 @@ def calcul_D(seq, l, count_ref, Rev_occ_ref):
 	D = [0] * len(seq)
 
 	for i in range(len(seq)):
-		k = count_ref[seq[i]] + Rev_occ_ref[seq[i]][k-1]+1
-		l = count_ref[seq[i]] + Rev_occ_ref[seq[i]][l]
+		k = C_ref[seq[i]] + Rev_occ_ref[seq[i]][k-1]+1
+		l = C_ref[seq[i]] + Rev_occ_ref[seq[i]][l]
 		if k > l :
 			k = 1
 			l = len(ref)
@@ -32,50 +32,44 @@ def calcul_D(seq, l, count_ref, Rev_occ_ref):
 		D[i]=z
 	return D
 
+def alignement_inexact(query,seq_ref):
+	pass
 
-
-def alignement_inexact(query, seq_ref):
-    pass
-
-def Inex_rec(seq, i, z, k, l, D, count_ref, occ_ref):
-	print('longueur',i)
-    
+def Inex_rec(seq, i, z, k, l, D, C_ref, occ_ref):
+#	print('--')
 	#Dans le cas où le nombre minimal de mismatch entre seq[0,i] est supérieur au nombre
 	#maximal de mismatch z permis par l'utilisateur, l'algorithme renvoie une liste vide
 	if z < D[i]:
-		return []
+		return set()
+	
 	#Dans le cas où i, la longueur du préfixe de seq que l'on regarde, est inférieure à 0,
 	#on renvoie l'intervalle SA
 	if i < 0:
-		print('k,l',(k,l))
-		return [k,l]
-	I = []
-	#I = I + [Inex_rec(seq, i - 1 , z - 1, k, l, D, count_ref, occ_ref)]
-	print('1',I)
+		new_set = set()
+		new_set.add((k,l))
+		return new_set
+	
+	I = set()
+	#I = I + [Inex_rec(seq, i - 1 , z - 1, k, l, D, C_ref, occ_ref)]
 	#on parcourt les lettres de l'alphabet, en recherche d'un match
 	for letter in ['A','C','G','T']:
-#		print('l',l)
-		k = count_ref[letter] + occ_ref[letter][k-1]
-		l = count_ref[letter] + occ_ref[letter][l-1]
-#		print((k,l))
-#		print('lettre1',letter)
+		k = C_ref[letter] + occ_ref[letter][k-1]+1
+		l = C_ref[letter] + occ_ref[letter][l]
+#		print('-----')
+#		print('i',i)
+#		print('lettre',letter)
+#		print('(k,l)',(k,l))
+		
 		#On vérifie que l'intervalle où l'on regarde n'est pas vide
 		if k <= l:
-			print('lettre2',letter)
 			#si on a un match, on continue l'algorithme en décrémentant i
 			if letter == seq[i]:
-				I = I + Inex_rec(seq, i - 1, z, k, l, D, count_ref, occ_ref)
+				I = I.union(Inex_rec(seq, i - 1, z, k, l, D, C_ref, occ_ref))
+				
 			#si on a pas de match, on continue l'algorithme en décrémentant i et z (nombre de mismatchs)
 			else: 
-				I = I + Inex_rec(seq, i - 1, z - 1, k, l, D, count_ref, occ_ref)
-	print(I)
+				I = I.union(Inex_rec(seq, i - 1, z - 1, k, l, D, C_ref, occ_ref))
 	return I
-
-
-
-
-
-
 
 
 class Alignement() :
@@ -136,51 +130,43 @@ class Alignement() :
                 z += 1
                 j = i + 1
             self.D[i] = z
-
-    def Inex_rec(self, i, z, k, l) :
+    # def Inex_rec(self, i, z, k, l) :
         
-        #Dans le cas où le nombre minimal de mismatch entre seq[0,i] est supérieur au nombre
-        #maximal de mismatch z permis par l'utilisateur, l'algorithme renvoie une liste vide
-        if z < self.D[i] :
-            return {}
-        #Dans le cas où i, la longueur du préfixe de seq que l'on regarde, est inférieure à 0,
-    	#on renvoie l'intervalle SA
-        if i < 0 :
-            return [k,l]
+        # #Dans le cas où le nombre minimal de mismatch entre seq[0,i] est supérieur au nombre
+        # #maximal de mismatch z permis par l'utilisateur, l'algorithme renvoie une liste vide
+        # if z < self.D[i] :
+            # return {}
+        # #Dans le cas où i, la longueur du préfixe de seq que l'on regarde, est inférieure à 0,
+    	# #on renvoie l'intervalle SA
+        # if i < 0 :
+            # return [k,l]
+
+    # def alignement_inexacte(self, z) :
         
-        
-    def alignement_inexacte(self, z) :
-        
-        self.calcul_D()
-        self.Inex_rec(len(self.query) - 1, z, 1, len(self.seq_ref) - 1) 
-
-
-
-
-
+        # self.calcul_D()
+        # self.Inex_rec(len(self.query) - 1, z, 1, len(self.seq_ref) - 1) 
 #test 
-seq = "ATGAGA"
-ref = "ATGCTA"
-l = len(ref)
+seq = "AT"
+ref = "ATGAGA"
+l = len(ref) + 1
 
 
-ref_BWT, count_ref, occ_ref = fm.FMindex(ref)
+ref_BWT, C_ref, occ_ref = fm.FMindex(ref)
 
-print('count_ref',count_ref)
+print('C_ref',C_ref)
+print('occ_ref', occ_ref)
 
 Rev_ref = ref[::-1]
 print('Rev_ref',Rev_ref)
-Rev_ref_BWT = fm.BWT(Rev_ref, fm.suffix_array(Rev_ref)[1])
-Rev_occ_ref = fm.count_table(Rev_ref_BWT)
+Rev_ref_BWT, Rev_C, Rev_occ_ref = fm.FMindex(Rev_ref)
 print('Rev_occ_ref',Rev_occ_ref)
 
-D = calcul_D(seq, l, count_ref, Rev_occ_ref)
+D = calcul_D(seq, l, C_ref, Rev_occ_ref)
 
-#print('ref_BWT',ref_BWT)
-#print('Rev_ref_BWT',Rev_ref_BWT)
-#D=[0,0,0,0]
-#I = Inex_rec(seq, len(seq) - 1,1,1,l,D,count_ref,occ_ref)
-#
-#print(count_ref)
-#print(occ_ref)
+print('D',D)
+
+I = Inex_rec(seq, len(seq) - 1,1,1,l,D,C_ref,occ_ref)
+print(' -- end of algorithm --')
+print('I',I)
+
 
