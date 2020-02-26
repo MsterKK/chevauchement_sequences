@@ -16,7 +16,7 @@ def gen_seq(nb_seq = 10, l_min = 30, l_max= 50):
 	liste_chaines = []
 	
 	for k in range(nb_seq):
-		letters = 'ACGT'
+		letters = 'ACGNT'
 		length = rd.randint(l_min, l_max)
 		rd_seq = ''.join((rd.choice(letters) for i in range(length)))
 		liste_chaines.append(rd_seq)
