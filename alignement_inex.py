@@ -82,6 +82,7 @@ class Alignement() :
     
     def __init__(self, seq_ref, query) :
         
+        # Initialisation des constants
         self.seq_ref = seq_ref
         self.query = query
         
@@ -136,13 +137,22 @@ class Alignement() :
                 j = i + 1
             self.D[i] = z
 
-    def Inex_rec(self) :
-        pass
-    
-    def alignement_inexacte(self) :
+    def Inex_rec(self, i, z, k, l) :
+        
+        #Dans le cas où le nombre minimal de mismatch entre seq[0,i] est supérieur au nombre
+        #maximal de mismatch z permis par l'utilisateur, l'algorithme renvoie une liste vide
+        if z < self.D[i] :
+            return {}
+        #Dans le cas où i, la longueur du préfixe de seq que l'on regarde, est inférieure à 0,
+    	#on renvoie l'intervalle SA
+        if i < 0 :
+            return [k,l]
+        
+        
+    def alignement_inexacte(self, z) :
         
         self.calcul_D()
-        self.Inex_rec()
+        self.Inex_rec(len(self.query) - 1, z, 1, len(self.seq_ref) - 1) 
 
 
 
