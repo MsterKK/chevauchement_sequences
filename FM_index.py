@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Feb 24 15:34:16 2020
-
-Certaines parties du code sont inspirées d'algorithmes trouvés sur Github:
-- notamment https://gist.github.com/Puriney/6324227
 """
 
+global alphabet
+alphabet = ["$","A","C","G", "N", "T"] 
 
 def suffix_array(seq) :
     """Fonction qui construit la table des suffixes associée à la chaîne de caractères seq
@@ -19,7 +18,6 @@ def suffix_array(seq) :
     
     # tri de la liste composée des suffixes ainsi que du rang du suffixe
     liste_suffixes = sorted([(seq[i:],i) for i in range(len(seq))])
-    
     #Construction de la liste contenant les rangs de la liste des suffixes
     S = [] ; seq_sorted = ''
     for suffixe in liste_suffixes :
@@ -77,7 +75,7 @@ def calcul_C(seq_sorted) :
     output
         dic: dictionnaire
     """
-    alphabet =["$","A","C","G","T"]                                
+    global alphabet                               
     
     # Initialisation du dictionnaire et du compteur d'occurence
     table_C = {}
@@ -107,7 +105,7 @@ def count_table(seq):
         dic_table: dictionnaire contenant des listes pour chaque clef
     """
     dic_table = {}
-    alphabet =["$","A","C","G","T"]
+    global alphabet
     taille_seq = len(seq)
     #initialisation du dictionnaire
     for letter in alphabet:
