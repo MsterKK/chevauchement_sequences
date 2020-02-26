@@ -109,7 +109,7 @@ def Inex_rec(seq, i, z, k, l, D, C_ref, occ_ref):
 	return I
 
 
-class Alignement() :
+class Alignement_inex() :
 	
 	def __init__(self, seq_ref, query) :
 		
