@@ -80,7 +80,7 @@ def Inex_rec(seq, i, z, k, l, D, count_ref, occ_ref):
 
 class Alignement() :
     
-    def __init__(seq_ref, query) :
+    def __init__(self, seq_ref, query) :
         
         self.seq_ref = seq_ref
         self.query = query
