@@ -32,25 +32,14 @@ def calcul_D(seq, l, count_ref, Rev_occ_ref):
 		D[i]=z
 	return D
 
-def calcul_D2(query, seq) :
-    z = 0
-    j = 0
-    D = [0]*len(query)
-    for i in range(len(query)) :
-        if query[j:i] not in seq :
-            z += 1
-            j = i + 1
-        D[i] = z
-    return D
 
-calcul_D(seq, l, count_ref, Rev_occ_ref)
-calcul_D2(seq, ref)
 
-def alignement_inexact():
-	pass
+def alignement_inexact(query, seq_ref):
+    pass
 
 def Inex_rec(seq, i, z, k, l, D, count_ref, occ_ref):
 	print('longueur',i)
+    
 	#Dans le cas où le nombre minimal de mismatch entre seq[0,i] est supérieur au nombre
 	#maximal de mismatch z permis par l'utilisateur, l'algorithme renvoie une liste vide
 	if z < D[i]:
@@ -83,10 +72,87 @@ def Inex_rec(seq, i, z, k, l, D, count_ref, occ_ref):
 	return I
 
 
+
+
+
+
+
+
+class Alignement() :
+    
+    def __init__(seq_ref, query) :
+        
+        self.seq_ref = seq_ref
+        self.query = query
+        
+        # Prétraitement de la séquence de référence
+        self.pretraitement()
+    
+    def pretraitement(self) :
+        
+        # FMindex : BW, table de C, table d'occurence de BW
+        self.ref_BWT, self.ref_C, self.ref_occ = fm.FMindex(self.seq_ref)
+
+        # Reverse de seq_ref
+        self.seq_ref_rev = self.seq_ref[::-1]
+        
+        # Table de 
+        self.ref_rev_BWT = fm.BWT(self.ref_rev, fm.suffix_array(self.ref_rev)[1])
+        self.ref_rev_occ = fm.count_table(self.ref_rev_BWT)
+        
+    
+    def calcul_D(self) :
+        """Calcule l'array D(.) -- 
+    	D[i] contient le nombre minimal de mismatch entre la sequence de reference et seq[0,i]
+    	---
+    	input: 
+    		seq: string -- chaine de caractères que l'on veut comparer à une séquence de référence
+    		l: int -- longueur de la séquence de référence
+    		count_ref: table C des caractères lexicographiquement plus petit (générée avec count_occ) de la sequence de reference
+    		Rev_occ_ref: table des occurences (générée avec count_table) 
+    			de la BWT de l'inverse de la sequence de reference
+    	"""
+        k = 1
+        l = len(self.seq_ref)
+        z = 0
+        self.D = [0] * len(self.query)
+        
+        for i in range(len(self.seq_ref)):
+            k = self.ref_C[self.query[i]] + self.ref_rev_occ[self.query[i]][k - 1] + 1
+            l = self.ref_C[self.query[i]] + self.ref_rev_occ[self.query[i]][l]
+            if k > l :
+                k = 1
+                l = len(self.seq_ref)
+                z = z + 1
+            self.D[i] = z
+    
+    def calcul_D2(self) :
+        z = 0
+        j = 0
+        self.D = [0]*len(self.query)
+        for i in range(len(self.query)) :
+            if self.query[j:i+1] not in self.seq_ref :
+                z += 1
+                j = i + 1
+            self.D[i] = z
+
+    def Inex_rec(self) :
+        pass
+    
+    def alignement_inexacte(self) :
+        
+        self.calcul_D()
+        self.Inex_rec()
+
+
+
+
+
 #test 
 seq = "ATGAGA"
-ref = "ATGCGA"
+ref = "ATGCTA"
 l = len(ref)
+
 
 ref_BWT, count_ref, occ_ref = fm.FMindex(ref)
 
