@@ -9,7 +9,7 @@ from generation_sequences import gen_seq
 import alignement_inex as ai
 
 #génération des chaînes à traiter
-liste_chaines = gen_seq(nb_seq = 1000, l_min = 5, l_max= 10)
+liste_chaines = gen_seq(nb_seq = 100, l_min = 5, l_max= 10)
 tailles_chaines =[len(chaine) for chaine in liste_chaines]
 
 #affichage des chaînes
@@ -26,7 +26,7 @@ dic_pre_traitement = {}
 nb_chaines = len(liste_chaines)
 for num_chaine in range(1,nb_chaines+1):
 	nom_chaine = 'S'+str(num_chaine)
-	dic_pre_traitement[nom_chaine] = ai.pretraitement #liste_chaines[num_chaine-1]
+	dic_pre_traitement[nom_chaine] = ai.pretraitement(liste_chaines[num_chaine-1])
 dic_chevauchement = {}
 #Parcours de toutes les combinaisons de chaînes distinctes possibles
 for n1 in range(1,nb_chaines):
