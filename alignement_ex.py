@@ -8,13 +8,6 @@ Created on Wed Feb 26 21:36:21 2020
 import generation_sequences as gs
 import FM_index as fm
 
-liste_adn = gs.gen_seq()
-seq = liste_adn[0]
-
-seq="ATCGATCG"
-query = "ATCGTCG"
-
-
 class Alignement_ex() :
 
     def __init__(self, seq_ref, query, index_ini = 0) :
@@ -53,7 +46,7 @@ class Alignement_ex() :
         sub_query = query_rev[self.index]
         
         # Initialisation du dictionnaire
-        if sub_query not in keys_C :
+        if sub_query not in keys_C or sub_query == keys_C[-1] :
             self.dict_SA = {}
         else :
             sp = self.table_C[sub_query]
@@ -96,70 +89,28 @@ class Alignement_ex() :
             pos_SA = self.dict_SA[key]
             self.pos_align[key] = (self.liste_suffixes[pos_SA[0]][1], self.liste_suffixes[pos_SA[1]][1])
             
-    def find_subalig(self, pos_align) : # essaie à maximiser l'alignement
-        
-        # Clémaximale
-        max_align = 0
-        cle = ()
-        for k, v in pos_align.items() :
-            if len(k[0]) >= max_align :
-                max_align = len(k[0])
-                cle, value = k, v
-                
-        return cle, value
-     
-    def alignement(self) :
-        # Réalisation BWA exacte
-        self.index_ini = self.index = 0
-        self.position_alignement()
-        
-        seq_ref_ch = ''
-        query_ch = ''
+    def find_subalig(self) : # essaie à maximiser l'alignement
         
         pos_align = self.pos_align
         
+        self.liste_alignement = []
+        # Clémaximale
         while len(pos_align) > 0 :
-            key, val = self.find_subalig(pos_align)
-            
-#            for pos_ref in val :
-#                dictx = 
-#                y = 
-#            
-            
-            # Nouveau dictionnaire du positionnement d'alignement
-            # Enlever les sub_query de même union
-            pos_align = {k : v for k, v in pos_align.items() if k[2] != key[2]}
-            
-            for pos_ref in val :
-                seq_ref_ch.join(self.seq_ref[:pos_ref] + key[1]*'-' + key[0])
-                query_ch.join(pos_ref*'-')
-
-            
-        return seq_ref_ch, query_ch
-        #self.find_subalig(pos_align)
-        
-        
+            max_align = 0
+            cle = ()
+            for k, v in pos_align.items() :
+                if len(k[0]) >= max_align :
+                    max_align = len(k[0])
+                    cle, value = k, v
+            self.liste_alignement.append((cle, value))
+            pos_align = {k : v for k, v in pos_align.items() if k[2] != cle[2]}
     
-al_in = Alignement_ex(seq, query)
-al_in.alignement()
-al_in.pos_align
-
-al_in.position_alignement()
-al_in.pos_align
-al_in.find_subalig(al_in.pos_align)
-
-al_in.dict_SA
-liste_suffixes = al_in.liste_suffixes
-test_occ = al_in.table_occurrences
-liste_suffixes = al_in.liste_suffixes
-
-test = Alignement_ex('ATCGATCG', 'GTGAT')
-test.position_alignement()
-test.pos_align
-
+# TEST
 seq=gs.gen_seq(nb_seq = 2, l_min = 5, l_max= 10)
 test=Alignement_ex(seq[0],seq[1])
 test.position_alignement()
+test.find_subalig()
 seq
+test.liste_alignement
 test.pos_align
 #Backward_count(seq, 'ACTTTAC')
