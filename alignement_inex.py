@@ -191,7 +191,7 @@ class Alignement_inex() :
 		
 		return I
 	
-	def Inex_rec(seq, i, z, k, l):
+	def Inex_rec(self, seq, i, z, k, l):
 		"""
 		seq = query : séquence à analyser
 				str
