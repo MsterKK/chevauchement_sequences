@@ -6,14 +6,14 @@ Created on Mon Feb 24 14:06:36 2020
 """
 
 
-def SingleBaseCompare(seq1,seq2,i,j):
+def base_compare(seq1,seq2,i,j):
     if seq1[i] == seq2[j]:
         return 2
     else:
         return -1
     
-# Smith–Waterman Alignment 
-def SMalignment(seq1, seq2):
+# Needleman-Wunsch Alignment 
+def NWalignment(seq1, seq2):
     
     # Construction de la matrice de similarité
     m = len(seq1)
@@ -28,7 +28,7 @@ def SMalignment(seq1, seq2):
         matrix[0][sjj] = sjj*g
     for siii in range(1, m):
         for sjjj in range(1, n):
-            matrix[siii][sjjj] = max(matrix[siii-1][sjjj] + g, matrix[siii - 1][sjjj - 1] + SingleBaseCompare(seq1,seq2,siii, sjjj), matrix[siii][sjjj-1] + g)
+            matrix[siii][sjjj] = max(matrix[siii-1][sjjj] + g, matrix[siii - 1][sjjj - 1] + base_compare(seq1,seq2,siii, sjjj), matrix[siii][sjjj-1] + g)
     
     # Construction de l'alignement entre deux séquences
     sequ1 = [seq1[m-1]]
@@ -66,6 +66,6 @@ sequence1 = 'GTGCCCCGGCGCCACGANGG'
 sequence2 = 'GTGCCCGGCTGCAAGCANGG'
 sequence3 = 'CGCCCCCTCGTGGCGCCNGG'
 
-SMalignment(sequence1, sequence2)
+NWalignment(sequence1, sequence2)
 
 
