@@ -26,7 +26,7 @@ dic_pre_traitement = {}
 nb_chaines = len(liste_chaines)
 for num_chaine in range(1,nb_chaines+1):
 	nom_chaine = 'S'+str(num_chaine)
-	dic_pre_traitement[nom_chaine] = ai.pretraitement(liste_chaines[num_chaine-1])
+	dic_pre_traitement[nom_chaine] = ai.pretraitement #liste_chaines[num_chaine-1]
 dic_chevauchement = {}
 #Parcours de toutes les combinaisons de chaînes distinctes possibles
 for n1 in range(1,nb_chaines):

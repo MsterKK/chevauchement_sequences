@@ -121,10 +121,10 @@ class Alignement_ex() :
         while len(pos_align) > 0 :
             key, val = self.find_subalig(pos_align)
             
-            for pos_ref in val :
-                dictx = 
-                y = 
-            
+#            for pos_ref in val :
+#                dictx = 
+#                y = 
+#            
             
             # Nouveau dictionnaire du positionnement d'alignement
             # Enlever les sub_query de même union
@@ -132,7 +132,7 @@ class Alignement_ex() :
             
             for pos_ref in val :
                 seq_ref_ch.join(self.seq_ref[:pos_ref] + key[1]*'-' + key[0])
-                query_ch.join(pos*'-' + )
+                query_ch.join(pos_ref*'-')
 
             
         return seq_ref_ch, query_ch
@@ -157,4 +157,9 @@ test = Alignement_ex('ATCGATCG', 'GTGAT')
 test.position_alignement()
 test.pos_align
 
+seq=gs.gen_seq(nb_seq = 2, l_min = 5, l_max= 10)
+test=Alignement_ex(seq[0],seq[1])
+test.position_alignement()
+seq
+test.pos_align
 #Backward_count(seq, 'ACTTTAC')
